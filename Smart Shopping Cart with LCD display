@@ -1,0 +1,438 @@
+#include <xc.h>
+//#include<string.h>
+//#include <stdio.h> 
+#include "conf[7977].h"
+#define input PORTC;
+#define rs PORTBbits.RB0                  /* PORTB 0 pin is used for Register Select */
+#define en PORTBbits.RB1                   /* PORTB 1 pin is used for Enable */
+#define rw PORTBbits.RB2
+#define ldata PORTD
+char fun_in();
+void lcdcmd(unsigned char value);
+void lcddata(unsigned char value);
+void EE_WRT(void);
+unsigned char EE_READ(void);
+void Delay(unsigned int itime);
+void lcd_user_entry();
+void lcd_user_exit();
+void lcd_pro_dis();
+
+void main() 
+{
+    unsigned char x, ch, y, cost, i,j,z, data, id, ping,k;
+    TRISD = 0X00; //output pin
+    TRISB = 0X00;
+    TRISC = 0XFF; //input pin
+    en = 0;
+    unsigned char conver[2] = " ";
+    unsigned char sum = 0;
+    unsigned char count1 =0;
+    unsigned char count2 =0;
+    unsigned char new[2];
+    unsigned char newp[2];
+    unsigned char henlo[4]={1,11,12,1};
+    lcdcmd(0X08);
+    lcdcmd(0X0E);
+    lcdcmd(0X01);
+   
+Delay(250);
+lcdcmd(0x0E); //display on Cursor on
+Delay(15);
+lcdcmd(0x01); //clear LCD
+Delay(15);
+lcdcmd(0x06); //shift cursor right
+Delay(15);
+lcdcmd(0x80); //cursor at line 1
+Delay(1000);
+
+    //first customer
+    EEADR=0X00;
+    EEDATA = 1;
+    EE_WRT();
+    
+    EEADR=0X01;
+    EEDATA = 'T';
+    EE_WRT();
+    
+    EEADR=0X02;
+    EEDATA = 'I';
+    EE_WRT();
+    
+    EEADR=0X03;
+    EEDATA = 'N';
+    EE_WRT();
+    
+    EEADR=0X04;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X05;
+    EEDATA = ' ';
+    EE_WRT();
+    
+     EEADR=0X06;
+    EEDATA = 123;
+    EE_WRT();
+    //second customer
+    EEADR = 0X10;
+    EEDATA = 2;
+    EE_WRT();
+  
+     EEADR=0X11;
+    EEDATA = 'A';
+    EE_WRT();
+    
+     EEADR=0X12;
+    EEDATA = 'N';
+    EE_WRT();
+    
+     EEADR=0X13;
+    EEDATA = 'U';
+    EE_WRT();
+    
+     EEADR=0X14;
+    EEDATA =' ';
+    EE_WRT();
+    
+    EEADR=0X15;
+    EEDATA = ' ';
+    EE_WRT();
+    
+    EEADR=0X16;
+    EEDATA = 56 ;
+    EE_WRT();
+    //third customer
+    EEADR=0X20;
+    EEDATA = 3;
+    EE_WRT();
+    
+     EEADR=0X21;
+    EEDATA = 'K';
+    EE_WRT();
+    
+    EEADR=0X22;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X23;
+    EEDATA = 'R';
+    EE_WRT();
+    
+    EEADR=0X24;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X25;
+    EEDATA = ' ';
+    EE_WRT();
+    
+    EEADR=0X26;
+    EEDATA = 112;
+    EE_WRT();
+    // PRODUCT1
+    EEADR=0X30;
+    EEDATA = 11;
+    EE_WRT();
+    
+     EEADR=0X31;
+    EEDATA = 'T';
+    EE_WRT();
+    
+     EEADR=0X32;
+    EEDATA = 'E';
+    EE_WRT();
+   
+    EEADR=0X33;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X34;
+    EEDATA = ' ';
+    EE_WRT();
+    
+     EEADR=0X35;
+    EEDATA = ' ';
+    EE_WRT();
+    
+     EEADR=0X36;
+    EEDATA = 10;
+    EE_WRT();
+    //PRODUCT2
+     EEADR=0X40;
+    EEDATA = 12;
+    EE_WRT();
+    
+    EEADR=0X41;
+    EEDATA = 'C';
+    EE_WRT();
+    
+    EEADR=0X42;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X43;
+    EEDATA = 'N';
+    EE_WRT();
+    
+    EEADR=0X44;
+    EEDATA = 'D';
+    EE_WRT();
+    
+    EEADR=0X45;
+    EEDATA = 'Y';
+    EE_WRT();
+    
+    EEADR=0X46;
+    EEDATA = 10;
+    EE_WRT();
+   
+    //PRODUCT3
+    EEADR=0X50;
+    EEDATA = 13;
+    EE_WRT();
+    
+    EEADR=0X51;
+    EEDATA = 'S';
+    EE_WRT();
+    
+    EEADR=0X52;
+    EEDATA = 'O';
+    EE_WRT();
+    
+    EEADR=0X53;
+    EEDATA = 'D';
+    EE_WRT();
+    
+    EEADR=0X54;
+    EEDATA = 'A';
+    EE_WRT();
+    
+    EEADR=0X55;
+    EEDATA = ' ';
+    EE_WRT();
+    
+    EEADR=0X56;
+    EEDATA = 20 ;
+    EE_WRT();
+   
+    
+    EECON1bits.WREN=0;
+    EECON1bits.RD=1;
+    
+    for(k=0;k<5;k++)
+    {
+      id = henlo[k];
+      if( (0<id<11) && count1==0)// user first entry
+      {
+        lcd_user_entry();
+        for(y=0X00;y<0X30;y=y+0X10)
+        {
+           EEADR = y;
+           ch = EE_READ();
+           if(ch == id)
+           {
+              for(i=0;i<4;i++)
+              {
+                 lcdcmd(0X84+i);
+                 EEADR = y +(i);
+                 data = EE_READ();
+                 lcddata(data);
+              } 
+           }
+        }
+        count1 = count1 + 1;
+        //id = fun_in();
+        
+      }
+    
+      if(id > 10 && count1>0) // shopping time
+      {
+        for(x=0X30;x<0X60;x=x+0X10)
+         {
+          EEADR = x;
+          ch = EE_READ();
+           if(ch==id)
+           {
+               EEADR = x + 0X06;
+               cost = EE_READ();
+               
+               sum = sum +cost ;//total
+               lcd_pro_dis();
+               new[1]= (char)sum;
+               for(z =0;z<2;z++)
+              {
+                lcdcmd(0XE1+z);
+                   data = new[z];
+                   lcddata(data);
+                   Delay(1000);
+              }
+               
+              
+               for(j=0;j<5;j++)//product
+              {
+                 lcdcmd(0X88+j);
+                 EEADR = y +(j);
+                 data = EE_READ();
+                 lcddata(data);
+                 Delay(1000);
+              }
+               
+               for(j=0;j<2;j++) //cost
+              {
+                 lcdcmd(0XC5+j);
+                 EEADR = y +(j);
+                 data = EE_READ();
+                 newp[1]= (char)data;
+                 lcddata(data);
+                 Delay(1000);
+              }
+           }
+       
+        //id = fun_in;
+        }   
+      }
+      if(id < 10 && count1 >0)//user second entry
+      {
+         lcd_user_exit();
+         sum = sum +cost ;
+             lcd_pro_dis();
+             new[1]= (char)sum;
+               for(z =0;z<2;z++)
+               {
+                   lcdcmd(0XE1+z);
+                   data = new[z];
+                   lcddata(data);
+                   Delay(1000);
+            }
+      break;
+      }
+      if(id>10 &&count1==0)//otherwise
+      {
+          id=henlo[k];
+         
+      }      
+    continue;
+    while(1);
+    }
+
+}
+void EE_WRT() 
+{
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.WREN = 1;
+    INTCONbits.GIE = 0;
+    EECON2 = 0X55;
+    EECON2 = 0XAA;
+    EECON1bits.WR = 1;
+    INTCONbits.GIE = 1;
+    while (!PIR2bits.EEIF);
+    PIR2bits.EEIF = 0;
+}
+
+unsigned char EE_READ() 
+{
+    EECON1bits.EEPGD = 0;
+    EECON1bits.CFGS = 0;
+    EECON1bits.RD = 1;
+    return (EEDATA);
+}
+
+void Delay(unsigned int itime) 
+{
+    unsigned int i;
+    unsigned char j;
+    for (i = 0; i < itime; i++)
+        for (j = 0; j < 135; j++); /*This count Provide delay of 1 ms for 8MHz Frequency */
+}
+
+void lcdcmd(unsigned char value) 
+{
+    ldata = value;
+    rs = 0;
+    rw = 0;
+    en = 1;
+    //Delay(1);
+    en = 0;
+}
+
+void lcddata(unsigned char value)
+{
+    ldata = value;
+    rs = 1;
+    rw = 0;
+    en = 1;
+    //Delay(1);
+    en = 0;
+}
+char fun_in() 
+{
+    unsigned char pong;
+    pong = input;
+    return pong;
+}
+
+void lcd_pro_dis()
+{
+  unsigned char p,q,r;
+  unsigned char label1[8] = "Product:";
+  unsigned char label2[5] ="Cost:";
+  unsigned char label3[4]="Sum:";
+  for(p=0;p<0X09;p++)
+  {
+      lcdcmd(0x80+p);
+      lcddata(label1[p]);
+      Delay(1000);
+  }
+  for(q=0;q<0X06;q++)
+  {
+      lcdcmd(0xC0+q);
+      lcddata(label2[q]);
+      Delay(1000);
+  }
+  for(r=0;r<0X04;r++)
+  {
+      lcdcmd(0xD0+r);
+      lcddata(label1[r]);
+      Delay(1000);
+  }
+  return;
+}
+void lcd_user_entry()
+{
+  unsigned char mess1[3] = "Hi!"; 
+  unsigned char mess2[13] ="HappyShopping";
+  unsigned char p,q;
+  for(p=0;p<0X03;p++)
+  {
+      lcdcmd(0x80+p);
+      lcddata(mess1[p]);
+      Delay(1000);
+  }
+  for(q=0;q<0X13;q++)
+  {
+      lcdcmd(0xC0+q);
+      lcddata(mess2[q]);
+      Delay(1000);
+  }
+  return;
+}
+void lcd_user_exit()
+{
+    unsigned char final[5] = "Total";
+    unsigned char mess[9] ="Thank you";
+    unsigned char p,q;
+    for(p=0;p<0X05;p++)
+  {
+      lcdcmd(0x80+p);
+      lcddata(final[p]);
+      Delay(1000);
+  }
+  for(q=0;q<0X08;q++)
+  {
+      lcdcmd(0xC0+q);
+      lcddata(mess[q]);
+      Delay(1000);
+  }
+    return;
+}
