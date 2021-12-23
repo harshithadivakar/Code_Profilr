@@ -1,0 +1,126 @@
+#include <xc.h>
+#define RS PORTBbits.RB0                  /* PORTB 0 pin is used for Register Select */
+#define EN PORTBbits.RB1                   /* PORTB 1 pin is used for Enable */
+#define RW PORTBbits.RB3
+#define LED PORTBbits.RB2
+#define ldata PORTD 
+void chk_isr(void);
+char RBINT_ISR(void);
+void lcdcmd(unsigned char value );
+void lcddata(unsigned char value);
+void MSDelay(unsigned int val);
+#pragma code HP_INT = 0X0008
+void HP_INT(void)
+{
+    asm("GOTO chk_isr");
+}
+#pragma code
+#pragma interrupt chk_isr
+void chk_isr(void)
+{
+    if(INTCONbits.RBIF==1)
+    {
+        RBINT_ISR();
+    }
+}
+
+void main(void) 
+{
+unsigned char i,a,b,c,d,x,y,p;
+unsigned char line1[16] = "PRESS SWITCH RB6";
+unsigned char line2[12] = "AS LED GLOWS";
+unsigned char line3[13] = "REACTION TIME";
+ TRISBbits.RB0 = 0;//output
+ TRISBbits.RB1 = 0;//output
+ TRISBbits.RB3 = 0;//output
+ TRISBbits.RB2 = 0;//output
+ TRISBbits.RB6 = 1;//input
+ INTCONbits.RBIF = 0;
+ INTCONbits.RBIE = 0 ;
+ INTCONbits.GIE = 1;
+ //TIMER
+ T0CON = 0X08;
+ TMR0H = 0X00;
+ TMR0L = 0X00;
+ TRISD = 0;
+ EN=0;
+
+ lcdcmd(0x0E); //display on Cursor on
+ lcdcmd(0x01); //clear LCD 
+ for(i = 0 ;i<=0X0F ;i++)//display in first line
+ {
+     a = 0X80 + i;
+     lcdcmd(a);
+     lcddata(line1[i]);
+ }
+ for(i = 0 ;i<0X0C ;i++)//display in second line
+ {
+     a = 0XC0 + i;
+     lcdcmd(a);
+     lcddata(line2[i]);
+ }
+LED = 1;  
+    if (LED==1 && INTCONbits.RBIF == 0)
+    {
+        T0CONbits.TMR0ON = 1;//start timer
+    }
+    if(LED == 0 && INTCONbits.RBIF==0) 
+    {
+        
+      T0CONbits.TMR0ON = 0;//stop timer
+       d = TMR0H & 0XF0;
+       c = TMR0H & 0X0F;
+       b = c |d;
+       x = b/1000;
+       for(i = 0 ;i<0X0D ;i++)
+       {
+       a = 0X80 + i;
+       lcdcmd(a);
+       lcddata(line3[i]);
+       }
+       for(i = 0 ;i<0X04 ;i++)//display the time
+       {
+        a = 0XC0 + i;
+        lcdcmd(a);
+        p = x %10;
+        lcddata(p);
+        x = (x - p)/10;
+       }
+       lcdcmd(0XC4);
+       lcddata('m');
+       lcdcmd(0XC5);
+       lcddata('s');
+    }
+
+}
+void lcdcmd(unsigned char value )
+{
+	ldata= value; /* Send data to PORT as a command for LCD */   
+	RS = 0; // Rs=0 lcdcmd
+    RW = 0; /* Command Register is selected R/w = 0 reading*/
+	EN = 1; 
+MSDelay(3);	/* High-to-Low pulse on Enable pin to latch data */ 
+	EN = 0;
+}
+void lcddata(unsigned char value)
+{
+	ldata= value;            /* Send data to LCD */  
+	RS = 1;  
+    RW=0;   /* Data Register is selected */
+	EN=1;
+MSDelay(1);/* High-to-Low pulse on Enable pin to latch data */   
+	EN=0;
+	
+}
+void MSDelay(unsigned int val)
+{
+     unsigned int i,j;
+        for(i=0;i<val;i++)
+            for(j=0;j<135;j++);      /*This count Provide delay of 1 ms for 8MHz Frequency */
+ }
+char RBINT_ISR(void)
+{
+    LED = 0;
+    INTCONbits.RBIF = 0;
+    return(LED);
+}
