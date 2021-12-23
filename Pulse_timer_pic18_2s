@@ -1,0 +1,47 @@
+#include<xc.h>
+
+#define  LED PORTBbits.RB1
+void chk_isr(void);
+void RBINT_ISR(void);
+#pragma code HP_INT = 0X0008
+void HP_INT(void)
+{
+    asm("GOTO chk_isr");
+}
+#pragma code
+#pragma interrupt chk_isr
+void chk_isr(void)
+{
+    if(INTCONbits.RBIF==1)
+    {
+        RBINT_ISR();
+    }
+}
+void main(void)
+{
+    unsigned char x;
+    TRISBbits.RB1 = 0;
+    TRISBbits.RB6 = 1;
+    INTCONbits.RBIF = 0;
+    INTCONbits.RBIE = 1 ;
+    INTCONbits.GIE = 1;
+    while(1)
+    {
+       x = x+1; 
+    }
+}
+void RBINT_ISR(void)
+{
+    unsigned char i,j;
+    TRISBbits.RB1 = 0;
+    //TRISBbits.RB6 = 1;
+    for(i=0;i<2001;i++)//2s led will be on
+    {
+        for(j=0;j<135;j++)
+        {
+          LED = 1;  
+        }
+    }
+    LED=0;
+    INTCONbits.RBIF = 0;
+}
