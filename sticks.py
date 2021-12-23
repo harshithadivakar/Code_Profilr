@@ -1,4 +1,4 @@
-num_sticks = input('Enter')
+num_sticks = input('Enter') ##IEEE EXTREME 
 x =list()
 if 1<= int(num_sticks)<= 10**50 :
 
