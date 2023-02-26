@@ -3,8 +3,7 @@
 #include <DFRobot_DHT11.h>
 SoftwareSerial bt(2,3);
 
-
-#include <LiquidCrystal.h> 
+ 
 #include "dht.h"
 #define dataPin 7
 
